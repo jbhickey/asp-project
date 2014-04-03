@@ -59,12 +59,14 @@ void cmd_handler(char *cmd, char *arg)
 	else if(strncmp("help",&cmd[0],strlen(cmd))==0)
 	{
 		// TODO : list of commands and arguments
-		printf("encode\n");
-		printf("eg. >encode -size -samples \n"); 
+		printf(">load -filename \n");
+		printf(">encode -size -samples \n"); 
+		printf(">decode -size -samples \n");
+		printf(">save -filename \n");
 	}
 	else
 	{
-		printf("Enter 'help' for instructions\n");
+		printf("Enter 'help' for commands\n");
 	}
 }
 
