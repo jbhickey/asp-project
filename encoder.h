@@ -1,6 +1,6 @@
 #ifndef ENCODE_H
 #define ENCODE_H
 
-int get_k(char *data);
+int get_k(int s_error);
 
 #endif

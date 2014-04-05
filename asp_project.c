@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "file_io.h"
 
@@ -28,12 +27,11 @@ void cmd_handler(char *cmd, char *arg)
 	if(strncmp("load",&cmd[0],strlen(cmd))==0)
 	{
 		file_read(&arg[0], &data_buf[0]);
-		loaded = 1;
 		printf("File '%s' loaded successfully",&arg[0]);
 	}	
 	else if(strncmp("encode",&cmd[0],strlen(cmd))==0)
 	{
-		
+		get_error()
 	}
 	else if(strncmp("decode",&cmd[0],strlen(cmd))==0)
 	{	
@@ -46,10 +44,10 @@ void cmd_handler(char *cmd, char *arg)
 	else if(strncmp("help",&cmd[0],strlen(cmd))==0)
 	{
 		// TODO : list of commands and arguments
-		printf(">load -filename \n");
+		printf(">load -filename\n");
 		printf(">encode -sizeofblock\n"); 
 		printf(">decode\n");
-		printf(">save -filename \n");
+		printf(">save -filename\n");
 	}
 	else
 	{
