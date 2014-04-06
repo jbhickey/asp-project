@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include "file_io.h"
+#include "prediction.h"
+#include "encoder.h"
 
 void cmd_handler(char *cmd, char *arg);
 
@@ -31,7 +33,7 @@ void cmd_handler(char *cmd, char *arg)
 	}	
 	else if(strncmp("encode",&cmd[0],strlen(cmd))==0)
 	{
-		get_error()
+		get_error(&data_buf[0]);
 	}
 	else if(strncmp("decode",&cmd[0],strlen(cmd))==0)
 	{	
@@ -51,7 +53,7 @@ void cmd_handler(char *cmd, char *arg)
 	}
 	else
 	{
-		printf("Enter 'help' for commands\n");
+		printf("Enter 'help me' for commands\n");
 	}
 }
 
