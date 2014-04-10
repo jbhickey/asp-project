@@ -16,8 +16,9 @@ void debug_file(char *filename)
 	FILE *debug_file;
 	char *buffer;
 	long file_size = 0;
+	int i = 0;
 
-	printf("opening file\n");
+	printf("Opening file....\n");
 
 	debug_file = fopen(filename,"r");
 	
@@ -25,21 +26,18 @@ void debug_file(char *filename)
        		printf("File error");
 
 	fseek(debug_file,0,SEEK_END);
-	printf("seek ok\n");
 
 	file_size = ftell(debug_file);
-	printf("file size ok\n");
+	printf("File size: %ld bytes\n",file_size);
 
 	rewind(debug_file);
-	printf("rewind ok\n");
 
 	buffer = (char*) malloc (sizeof(char)*file_size);
-	printf("allocated memory\n");
 
 	fread(buffer,1,file_size,debug_file);
-	printf("read file\n");
 
-	printf("%s",buffer);
+	for(i=0;i<file_size;i++)
+		printf("%c",buffer[i]);
 
 	fclose(debug_file);
 	free(buffer);
