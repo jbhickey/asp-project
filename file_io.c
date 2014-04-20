@@ -4,55 +4,96 @@
 
 #include "file_io.h"
 
-void file_read(char *filename, char *filedata)
+// Global file data buffer
+extern char *g_data_buf;
+
+void read_file(char *filename)
 {
-	FILE *input_file = fopen(filename,"r");      
+	FILE *input_file;
+	long input_file_size = 0;
 	
+	printf("Reading file....\n");
+
+	input_file = fopen(filename,"r");      
+	
+	if(input_file == NULL)
+		printf("File error\n");
+	
+	input_file_size = get_file_size(input_file);
+	
+	g_data_buf = (char*) malloc (sizeof(char)*input_file_size);
+
+	fread(g_data_buf,1,input_file_size,input_file);
+
 	fclose(input_file);
 }
-
+ 
 void debug_file(char *filename)
 {
 	FILE *debug_file;
-	char *buffer;
+	char *tmp_buf;
 	long file_size = 0;
 	int i = 0;
 
-	printf("Opening file....\n");
+	printf("Opening file to debug....\n");
 
 	debug_file = fopen(filename,"r");
 	
 	if(debug_file == NULL)
-       		printf("File error");
+       		printf("File error\n");	
+	
+	file_size = get_file_size(debug_file); 
 
-	fseek(debug_file,0,SEEK_END);
+	printf("File size: %ld bytes\n",file_size);	
+	
+	tmp_buf = (char*) malloc (sizeof(char)*file_size);
 
-	file_size = ftell(debug_file);
-	printf("File size: %ld bytes\n",file_size);
-
-	rewind(debug_file);
-
-	buffer = (char*) malloc (sizeof(char)*file_size);
-
-	fread(buffer,1,file_size,debug_file);
+	fread(tmp_buf,1,file_size,debug_file);
 
 	for(i=0;i<file_size;i++)
-		printf("%c",buffer[i]);
+		printf("%c",tmp_buf[i]);
 
 	fclose(debug_file);
-	free(buffer);
+	free(tmp_buf);
 }
 
-int get_file_size(char *data)
+long get_file_size(FILE *file)
 {
-	int file_size = 0;
+	long size = 0;
 
-	return file_size;
+	fseek(file,0,SEEK_END); // Set pointer to EOF
+	size = ftell(file); // Get position in file
+	rewind(file); // Reset file pointer?
+
+	return size;
 }
 
 void read_block(char *data)
 {
+	
+}
 
+void write_block(char *data)
+{
+	FILE* output_file;
+	int i = 0;
+	
+	output_file = fopen("Output/test.out", "a"); // Open file for appending
+	
+	for(i=0;i<BLOCK_SIZE;i++)
+		fprintf(output_file,"%c",data[i]);
+	
+	printf("Block written....\n");
+
+	fclose(output_file);
+
+	/*
+	  Get number of samples to find which block
+	  will be the final based off the BLOCK_SIZE
+
+	  if(block_cnt == final_block)
+	          free(g_data_buf);
+	*/
 }
 
 int get_num_samples(char *data)

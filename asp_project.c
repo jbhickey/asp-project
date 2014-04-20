@@ -8,11 +8,11 @@
 void cmd_handler(char *cmd);
 
 char data_buf[256] = {0};
-
+char *g_data_buf;
 
 int main(void)
 {    
-	char cmd[8] = {0};
+	char cmd[32] = {0};
 
 	while(1)
 	{
@@ -28,6 +28,7 @@ int main(void)
 void cmd_handler(char *cmd)
 {
 	char arg[32] = {0};
+	int block_cnt = 0;
 
 	if(strncmp("debug",&cmd[0],5)==0)
 	{
@@ -37,9 +38,22 @@ void cmd_handler(char *cmd)
 	}
 	else if(strncmp("load",&cmd[0],4)==0)
 	{
-		file_read(&arg[0], &data_buf[0]);
-		printf("File '%s' loaded successfully",&arg[0]);
+		printf("Enter filename\n> ");
+		scanf("%s",&arg[0]);
+
+		read_file(&arg[0]);
+		
+		printf("File '%s' loaded successfully\n",&arg[0]);		
 	}	
+	else if(strncmp("write",&cmd[0],5)==0)
+	{
+		printf("Preparing to write test blocks\n");
+		
+		for(block_cnt=0;block_cnt<4;block_cnt++)
+			write_block(&g_data_buf[block_cnt*BLOCK_SIZE]);
+		
+		printf("Test blocks written\n"); 
+	}
 	else if(strncmp("encode",&cmd[0],6)==0)
 	{
 		get_error(&data_buf[0]);
