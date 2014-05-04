@@ -7,7 +7,6 @@
 
 void cmd_handler(char *cmd);
 
-char data_buf[256] = {0};
 char *g_data_buf;
 
 int main(void)

@@ -1,7 +1,9 @@
 #ifndef PREDICT_H
 #define PREDICT_H
 
-int get_predictor(void);
-int get_error(char *data);
+int optimum_predictor(void);
+void auto_corr(char *s, char *r, long norm_factor);
+long get_norm_factor(char *s);
+void get_coeffs(int *a, char *r, int n);
 
 #endif
