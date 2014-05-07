@@ -2,35 +2,37 @@
 #include <string.h>
 #include "prediction.h"
 
-
 // Take the signal (s) to produce the error for an order
 // return order to write to block
 // Remember encode error[order] to 
-int optimum_predictor(char *signal_data, char *auto_corr_func)
+int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 {
 	char sse[3] = {0};
-	char error[3][] = {0};
+	int coeffs[3];
 	long norm_factor = 0;
 	int order = 0;
 	int n = 0;
 	int i = 0;
 
-	norm_factor = get_norm_factor(&signal_data[0]);	
+	// Get normalisation factor for a given signal block
+	norm_factor = get_norm_factor(signal_data);	
 
-	auto_corr(&signal_data[0], &auto_corr_func[0], norm_factor);	
+	// Generate normalised auto-correlation function
+	auto_corr(signal_data, &auto_corr_func[0], norm_factor);	
    
 	for(n=0;n<3;n++)
 	{
 		// Get coeffs for current order
 		get_coeffs(&coeffs[0], &auto_corr_func[0], n);
 
-		// Calculate error vector
-		
+		// Calculate error vector given coeffs and signal data
+		// error_vect(&coeffs[0], signal_data, error);
+
 		// Calculate SSE for order
 		for(i=0;i<sizeof(error[n]);i++)
 			sse[n] += error[n][i];
 		
-		sse[n] /= sizeof(error[n]);
+		sse[n] /= strlen(error[n]);
 	}
 
 	// Compare errors from different order predictors
@@ -57,13 +59,13 @@ void auto_corr(char *s, char *r, long norm_factor)
 		r[i] /= norm_factor;
 }
 
-// Return normalization actor given signal (s)
+// Return normalization factor given signal (s)
 long get_norm_factor(char *s)
 {
 	long f = 0; // normalisation factor
 
 	// Iterate through signal and square each element
-	for(i=0;i<sizeof(s);i++)
+	for(i=0;i<strlen(s);i++)
 		f += s[i]*s[i];
 	
 	return f;			
