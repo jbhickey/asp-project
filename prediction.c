@@ -1,18 +1,15 @@
 #include <stdio.h>
 #include <string.h>
-
 #include "prediction.h"
 
-int error[3][32] = {0};
-int coeffs[32] = {0};
-char signal_data[32] = {0}; 
-char auto_corr_func[32] = {0};
 
 // Take the signal (s) to produce the error for an order
 // return order to write to block
 // Remember encode error[order] to 
-int optimum_predictor(void)
+int optimum_predictor(char *signal_data, char *auto_corr_func)
 {
+	char sse[3] = {0};
+	char error[3][] = {0};
 	long norm_factor = 0;
 	int order = 0;
 	int n = 0;
@@ -53,6 +50,7 @@ int optimum_predictor(void)
 // given normalization factor (norm_factor)
 void auto_corr(char *s, char *r, long norm_factor)
 {
+	// TODO: auto-correlation
 	
 	// Normalise each element 
 	for(i=0;i<sizeof(r);i++)
