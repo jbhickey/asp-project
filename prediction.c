@@ -2,9 +2,17 @@
 #include <string.h>
 #include "prediction.h"
 
-// Take the signal (s) to produce the error for an order
-// return order to write to block
-// Remember encode error[order] to 
+/* Average 2nd order linear predictor, take signal data and return
+   eq e[n] = s[n] - sp[n]
+   sp[n] = 0.5s[n-1] + 0.5s[n-2] */
+void avg_predictor(char *signal_data, char *error)
+{
+	
+}
+
+/* Take the signal (s) to produce the error for an order
+   return order with smallest error to write to block
+   Remember encode error[order] to */
 int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 {
 	char sse[3] = {0};

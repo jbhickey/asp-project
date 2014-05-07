@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "file_io.h"
@@ -27,7 +28,10 @@ int main(void)
 void cmd_handler(char *cmd)
 {
 	char arg[32] = {0};
+	char error[3][BLOCK_SIZE] = {0};
+	int file_size = 0;
 	int block_cnt = 0;
+	static bool file_loaded = 0;
 
 	if(strncmp("debug",&cmd[0],5)==0)
 	{
@@ -40,9 +44,11 @@ void cmd_handler(char *cmd)
 		printf("Enter filename\n> ");
 		scanf("%s",&arg[0]);
 
-		read_file(&arg[0]);
+		file_size = read_file(&arg[0]);
 		
 		printf("File '%s' loaded successfully\n",&arg[0]);		
+		
+		file_loaded = 1;
 	}	
 	else if(strncmp("write",&cmd[0],5)==0)
 	{
@@ -55,7 +61,23 @@ void cmd_handler(char *cmd)
 	}
 	else if(strncmp("encode",&cmd[0],6)==0)
 	{
-		get_error(&data_buf[0]);
+		//get_error(&data_buf[0]);
+		if(file_loaded)
+		{
+			for(block_cnt=0;block_cnt<file_size/BLOCK_SIZE;block_cnt++)
+			{
+				// 2nd order avg predictor hence error[1]
+				avg_predictor(&g_data_buf[block_cnt*BLOCK_SIZE], &error[1]);
+				
+				// Encode error vector
+
+				// Write encoded data to file
+			}
+		}
+		else
+		{
+			printf("No file loaded...\n");		
+		}
 	}
 	else if(strncmp("decode",&cmd[0],6)==0)
 	{	

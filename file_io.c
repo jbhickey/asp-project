@@ -7,7 +7,7 @@
 // Global file data buffer
 extern char *g_data_buf;
 
-void read_file(char *filename)
+int read_file(char *filename)
 {
 	FILE *input_file;
 	long input_file_size = 0;
@@ -26,6 +26,8 @@ void read_file(char *filename)
 	fread(g_data_buf,1,input_file_size,input_file);
 
 	fclose(input_file);
+	
+	return input_file_size;
 }
  
 void debug_file(char *filename)
