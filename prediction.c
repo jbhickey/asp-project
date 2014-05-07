@@ -1,13 +1,26 @@
 #include <stdio.h>
 #include <string.h>
 #include "prediction.h"
+#include "file_io.h"
 
-/* Average 2nd order linear predictor, take signal data and return
+/* Average 1st order linear predictor, take signal data and return
    eq e[n] = s[n] - sp[n]
    sp[n] = 0.5s[n-1] + 0.5s[n-2] */
-void avg_predictor(char *signal_data, char *error)
+void avg_predictor(char *s, char *e)
 {
-	
+	char sp[BLOCK_SIZE] = {0};
+
+	// Iterate through signal and calculate prediction 
+	for(n=0;n<BLOCK_SIZE;n++)
+	{
+		if(n)
+			sp[n] = s[n-1] >> 1;
+		else
+			sp[n] = s[n];
+		
+		// Assign error for sample
+		e[n] = s[n] - sp[n];		
+	}
 }
 
 /* Take the signal (s) to produce the error for an order

@@ -63,9 +63,14 @@ long get_file_size(FILE *file)
 {
 	long size = 0;
 
-	fseek(file,0,SEEK_END); // Set pointer to EOF
-	size = ftell(file); // Get position in file
-	rewind(file); // Reset file pointer?
+	// Set pointer to EOF
+	fseek(file,0,SEEK_END); 
+
+	// Get position in file
+	size = ftell(file); 
+
+	// Reset file pointer?
+	rewind(file); 
 
 	return size;
 }

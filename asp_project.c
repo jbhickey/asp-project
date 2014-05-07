@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-
 #include "file_io.h"
 #include "prediction.h"
 #include "encoder.h"
@@ -29,6 +28,7 @@ void cmd_handler(char *cmd)
 {
 	char arg[32] = {0};
 	char error[3][BLOCK_SIZE] = {0};
+	char write_buf[BLOCK_SIZE] = {0};
 	int file_size = 0;
 	int block_cnt = 0;
 	static bool file_loaded = 0;
@@ -61,17 +61,21 @@ void cmd_handler(char *cmd)
 	}
 	else if(strncmp("encode",&cmd[0],6)==0)
 	{
-		//get_error(&data_buf[0]);
 		if(file_loaded)
 		{
 			for(block_cnt=0;block_cnt<file_size/BLOCK_SIZE;block_cnt++)
 			{
-				// 2nd order avg predictor hence error[1]
-				avg_predictor(&g_data_buf[block_cnt*BLOCK_SIZE], &error[1]);
+				// Nth order avg predictor hence error[n-1]
+				avg_predictor(&g_data_buf[block_cnt*BLOCK_SIZE], &error[0]);
 				
 				// Encode error vector
+				encode(&error[0],&write_buf[0]);
 
 				// Write encoded data to file
+				write_block(&write_buf[0]);
+				
+				// Clear write buffer
+				memset(&write_block[0], 0x00, strlen(&write_block));
 			}
 		}
 		else
