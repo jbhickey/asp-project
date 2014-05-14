@@ -1,39 +1,49 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 #include "file_io.h"
 #include "prediction.h"
 #include "encoder.h"
 
 char *g_data_buf;
+char *error;
+char *write_buf;
 
 int main(int argc, char *argv[])
 {    
-	char error[BLOCK_SIZE] = {0};
-	char write_buf[BLOCK_SIZE] = {0};
+	int block_size = atoi(argv[2]);
 	int file_size = 0;
 	int block_cnt = 0;
 
+	error = (char*) malloc (sizeof(char)*block_size);
+	write_buf = (char*) malloc (sizeof(char)*block_size);
+	
 	// Filename as argument 
 	file_size = read_file(argv[1]);
 
 	// Write specifications to output file
 
 	// Iterate through input data
-	for(block_cnt=0;block_cnt<file_size/BLOCK_SIZE;block_cnt++)
+	for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++)
 	{
 		// Nth order avg predictor hence error[n-1]
-		avg_predictor(&g_data_buf[block_cnt*BLOCK_SIZE], &error[0]);
+		avg_predictor(&g_data_buf[block_cnt*block_size], error, block_size);
 		
 		// Encode error vector
-		encode(&error[0],&write_buf[0]);
+		encode(error, write_buf, block_size);
 
 		// Write encoded data to file
-		write_block(&write_buf[0]);
+		write_block(write_buf, block_size);
 				
 		// Clear write buffer
-		memset(&write_buf[0], 0x00, strlen(&write_buf[0]));
+		memset(write_buf, 0x00, strlen(write_buf));
 	}
+
+	free(error);
+	free(write_buf);
+
+	printf("Operation complete...\n");
 
 	return 0;
 }

@@ -73,19 +73,14 @@ long get_file_size(FILE *file)
 	return size;
 }
 
-void read_block(char *data)
-{
-	
-}
-
-void write_block(char *data)
+void write_block(char *data, int block_size)
 {
 	FILE* output_file;
 	int i = 0;
 	
 	output_file = fopen("Output/test.out", "a"); // Open file for appending
 	
-	for(i=0;i<BLOCK_SIZE;i++)
+	for(i=0;i<block_size;i++)
 		fprintf(output_file,"%c",data[i]);
 	
 	printf("Block written....\n");

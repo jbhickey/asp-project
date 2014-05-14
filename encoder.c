@@ -5,12 +5,12 @@
 
 /* Rice coding for a k = 2 parameter, takes error vector 
    and for each index performs rice coding */
-void encode(char *e, char *buf)
+void encode(char *e, char *buf, int block_size)
 {
 	int n = 0;
 	int z = 0;
 
-	for(n=0;n<BLOCK_SIZE;n++)
+	for(n=0;n<block_size;n++)
 	{
 		// Get last k bits
 		buf[n] += e[n] && 0x03;
