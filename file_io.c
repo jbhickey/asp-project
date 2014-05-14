@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "file_io.h"
 
-// Global file data buffer
 extern char *g_data_buf;
 
 int read_file(char *filename)

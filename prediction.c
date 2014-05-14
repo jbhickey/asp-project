@@ -9,6 +9,7 @@
 void avg_predictor(char *s, char *e)
 {
 	char sp[BLOCK_SIZE] = {0};
+	int n = 0;
 
 	// Iterate through signal and calculate prediction 
 	for(n=0;n<BLOCK_SIZE;n++)
@@ -29,12 +30,12 @@ void avg_predictor(char *s, char *e)
 int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 {
 	char sse[3] = {0};
-	int coeffs[3];
 	long norm_factor = 0;
 	int order = 0;
 	int n = 0;
 	int i = 0;
-
+	int coeffs[3];
+	
 	// Get normalisation factor for a given signal block
 	norm_factor = get_norm_factor(signal_data);	
 
@@ -50,10 +51,10 @@ int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 		// error_vect(&coeffs[0], signal_data, error);
 
 		// Calculate SSE for order
-		for(i=0;i<sizeof(error[n]);i++)
-			sse[n] += error[n][i];
+		for(i=0;i<sizeof(error);i++)
+			sse[n] += error[i];
 		
-		sse[n] /= strlen(error[n]);
+		sse[n] /= strlen(&error[0]);
 	}
 
 	// Compare errors from different order predictors
@@ -73,7 +74,7 @@ int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 // given normalization factor (norm_factor)
 void auto_corr(char *s, char *r, long norm_factor)
 {
-	// TODO: auto-correlation
+	int i = 0;
 	
 	// Normalise each element 
 	for(i=0;i<sizeof(r);i++)
@@ -84,6 +85,7 @@ void auto_corr(char *s, char *r, long norm_factor)
 long get_norm_factor(char *s)
 {
 	long f = 0; // normalisation factor
+	int i = 0;
 
 	// Iterate through signal and square each element
 	for(i=0;i<strlen(s);i++)

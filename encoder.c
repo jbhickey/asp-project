@@ -8,7 +8,8 @@
 void encode(char *e, char *buf)
 {
 	int n = 0;
-	
+	int z = 0;
+
 	for(n=0;n<BLOCK_SIZE;n++)
 	{
 		// Get last k bits
