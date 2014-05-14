@@ -9,18 +9,37 @@ void encode(char *e, char *buf, int block_size)
 {
 	int n = 0;
 	int z = 0;
+	int k = 0;
 
+	// Get k parameter
+	k = get_k(get_sse(e));
+	
 	for(n=0;n<block_size;n++)
 	{
 		// Get last k bits
-		buf[n] += e[n] && 0x03;
+		buf[n] += e[n] && (0xFF >> (8-k));
 
 		// No of zeroes = Remaining 6-bits
-		z += e[n] && 0xFC;
+		z += e[n] && (0xFF << k);
 
 		// Prefix sign-bit and z zeros
 		buf[n] += 1 << (2+z);		
 	}
+}
+
+int get_sse(char *e)
+{
+	int sse = 0;
+	int se = 0;
+	int i = 0;
+
+	for(i=0;i<strlen(e);i++)
+	{
+		se = e[i]*e[i];
+		sse += se;
+	}
+
+	return sse;
 }
 
 int get_k(int s_error)

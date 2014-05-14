@@ -4,6 +4,6 @@
 
 ## Usage
 
-Run the program with filename and blocksize arguments
+Run the program with filename and blocksize (in bytes) arguments
 
 `./codec Samples/test44100.wav 1024`

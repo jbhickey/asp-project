@@ -53,7 +53,7 @@ int optimum_predictor(char *signal_data, char *auto_corr_func, char *error)
 		// error_vect(&coeffs[0], signal_data, error);
 
 		// Calculate SSE for order
-		for(i=0;i<sizeof(error);i++)
+		for(i=0;i<strlen(error);i++)
 			sse[n] += error[i];
 		
 		sse[n] /= strlen(&error[0]);
