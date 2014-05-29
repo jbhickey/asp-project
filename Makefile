@@ -1,11 +1,12 @@
 CC = gcc
+
 CFLAGS = -Wall -g -I.
 
 ODIR = obj
 
-DEPS = file_io.h encoder.h prediction.h
+DEPS = file_io.h encoder.h prediction.h decoder.h
 
-_OBJ = asp_project.o file_io.o encoder.o prediction.o
+_OBJ = asp_project.o file_io.o encoder.o prediction.o decoder.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)

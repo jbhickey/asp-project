@@ -11,19 +11,19 @@ void encode(char *e, char *buf, int block_size)
 	int z = 0;
 	int k = 0;
 
-	// Get k parameter
+	/* Get k parameter */
 	k = get_k(get_sse(e));
 	
-	for(n=0;n<block_size;n++)
+	for(n=0,z=0;n<block_size;n++)
 	{
-		// Get last k bits
-		buf[n] += e[n] && (0xFF >> (8-k));
+		/* Get last k bits */
+		buf[n] = e[n] && (0xFF >> (8-k));
 
-		// No of zeroes = Remaining 6-bits
-		z += e[n] && (0xFF << k);
-
-		// Prefix sign-bit and z zeros
-		buf[n] += 1 << (2+z);		
+		/* No of zeroes = Remaining 6-bits */
+		z = e[n] && (0xFF << k);
+		
+		/* Prefix sign-bit and z zeros */
+		buf[n] |= 1 << (2+z);		
 	}
 }
 
@@ -46,7 +46,7 @@ int get_k(int s_error)
 {
 	int k = 0;
 	
-	// Source: Dennis Deng, assignment sheet
+	/* Source: Dennis Deng, assignment sheet */
 	for(k = 7;k >= 1;k--)
 	{
 		if(((s_error >> k) & 1) == 1)
