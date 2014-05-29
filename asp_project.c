@@ -44,21 +44,38 @@ int main(int argc, char *argv[])
 			encode(error, write_buf, block_size);
 			
 			/* Write encoded data to file */
-			write_block(write_buf, block_size);
+			write_block("Output/encoded.out", write_buf, block_size);
+				
+			/* Clear write buffer */
+			memset(write_buf, 0x00, strlen(write_buf));
+		}
+		
+		memset(error, 0x00, strlen(error));
+		memset(write_buf, 0x00, strlen(write_buf));
+		free(g_data_buf);
+
+		printf("Encoding complete...\n");
+		printf("Beginning decoding...\n");
+
+		/* Read encoded output file */
+		file_size = read_file("/Output/test.out");
+		for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++)
+		{
+			/* Decode to error vector */
+			encode(error, g_data_buf, block_size);
+			
+			/* Write encoded data to file */
+			write_block("Output/decoded.out", write_buf, block_size);
 				
 			/* Clear write buffer */
 			memset(write_buf, 0x00, strlen(write_buf));
 		}
 
+		/* Free up used memory */
 		free(error);
 		free(write_buf);
-
-		printf("Encoding complete...\n");
-		
-		/* Read encoded output file */
-		
+		free(g_data_buf);
 	}
-
 	return 0;
 }
 

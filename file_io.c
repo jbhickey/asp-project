@@ -73,12 +73,12 @@ long get_file_size(FILE *file)
 	return size;
 }
 
-void write_block(char *data, int block_size)
+void write_block(char *filename, char *data, int block_size)
 {
 	FILE* output_file;
 	int i = 0;
 	
-	output_file = fopen("Output/test.out", "a"); // Open file for appending
+	output_file = fopen(filename, "a"); // Open file for appending
 	
 	for(i=0;i<block_size;i++)
 		fprintf(output_file,"%c",data[i]);
