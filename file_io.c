@@ -9,11 +9,13 @@ int read_file(char *filename)
 {
 	FILE *input_file;
 	long input_file_size = 0;
-	
+
 	printf("Reading file....\n");
 
 	input_file = fopen(filename,"r");      
-	
+
+	printf("Filename: %s\n",filename);
+
 	if(input_file == NULL)
 		printf("File error\n");
 	
@@ -22,7 +24,7 @@ int read_file(char *filename)
 	g_data_buf = (char*) malloc (sizeof(char)*input_file_size);
 
 	fread(g_data_buf,1,input_file_size,input_file);
-
+	
 	fclose(input_file);
 	
 	return input_file_size;
@@ -83,8 +85,6 @@ void write_block(char *filename, char *data, int block_size)
 	for(i=0;i<block_size;i++)
 		fprintf(output_file,"%c",data[i]);
 	
-	printf("Block written....\n");
-
 	fclose(output_file);
 
 	/*

@@ -13,17 +13,19 @@ void encode(char *e, char *buf, int block_size)
 
 	/* Get k parameter */
 	k = get_k(get_sse(e));
-	
+	printf("K: %d\n",k);
+
 	for(n=0,z=0;n<block_size;n++)
 	{
 		/* Get last k bits */
-		buf[n] = e[n] && (0xFF >> (8-k));
-
+		buf[n] = e[n] && (0xFF >> (7-k));
+		
 		/* No of zeroes = Remaining 6-bits */
 		z = e[n] && (0xFF << k);
 		
 		/* Prefix sign-bit and z zeros */
-		buf[n] |= 1 << (2+z);		
+		buf[n] += 1 << (2+z);	
+		
 	}
 }
 
