@@ -3,9 +3,8 @@
 #include "encoder.h"
 #include "file_io.h"
 
-/* Rice coding for a k = 2 parameter, takes error vector
-   and for each index performs rice coding */
-void encode(char *e, char *buf, int block_size)
+/* Encodes block data and returns k parameter for block */
+int encode(char *e, char *buf, int block_size)
 {
 	int n = 0;
 	int z = 0;
@@ -30,8 +29,12 @@ void encode(char *e, char *buf, int block_size)
 		/* Prefix sign bit and number of zeroes*/
 		buf[n] |= (0x01 << (k+z));
 	}
+
+	return k;
 }
 
+/* Given an error vector */
+/* returns the sum of squared error */
 int get_sse(char *e)
 {
 	int sse = 0;

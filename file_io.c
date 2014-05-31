@@ -29,50 +29,17 @@ int read_file(char *filename)
 	
 	return input_file_size;
 }
- 
-void debug_file(char *filename)
+
+/* Write only the k parameter to output */
+void write_k(char *filename, int k)
 {
-	FILE *debug_file;
-	char *tmp_buf;
-	long file_size = 0;
-	int i = 0;
-
-	printf("Opening file to debug....\n");
-
-	debug_file = fopen(filename,"r");
+	FILE* output_file;
 	
-	if(debug_file == NULL)
-       		printf("File error\n");	
+	output_file = fopen(filename, "a"); // Open file for appending
 	
-	file_size = get_file_size(debug_file); 
-
-	printf("File size: %ld bytes\n",file_size);	
+	fprintf(output_file,"%c",(char)k);
 	
-	tmp_buf = (char*) malloc (sizeof(char)*file_size);
-
-	fread(tmp_buf,1,file_size,debug_file);
-
-	for(i=0;i<file_size;i++)
-		printf("%c",tmp_buf[i]);
-
-	fclose(debug_file);
-	free(tmp_buf);
-}
-
-long get_file_size(FILE *file)
-{
-	long size = 0;
-
-	// Set pointer to EOF
-	fseek(file,0,SEEK_END); 
-
-	// Get position in file
-	size = ftell(file); 
-
-	// Reset file pointer?
-	rewind(file); 
-
-	return size;
+	fclose(output_file);	
 }
 
 void write_block(char *filename, char *data, int block_size)
@@ -94,6 +61,22 @@ void write_block(char *filename, char *data, int block_size)
 	  if(block_cnt == final_block)
 	          free(g_data_buf);
 	*/
+}
+
+long get_file_size(FILE *file)
+{
+	long size = 0;
+
+	// Set pointer to EOF
+	fseek(file,0,SEEK_END); 
+
+	// Get position in file
+	size = ftell(file); 
+
+	// Reset file pointer?
+	rewind(file); 
+
+	return size;
 }
 
 int get_num_samples(char *data)

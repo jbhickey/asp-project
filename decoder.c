@@ -1,38 +1,36 @@
 #include <stdio.h>
+#include <string.h>
 #include "decoder.h"
 
-
-/* Produce an error vector for each sample in encoded block */
-void decode(char *e, char *buf, int block_size)
+/* Decode an error vector for each sample in encoded block */
+void decode(char *e, char *buf, int block_size, int k)
 {
 	int n = 0;
-	int k = 0;
 	int z = 0;
 
-	k = buf[0];
+	/* Clear error */
+	memset(e, 0x00, block_size);
 
-	for(n=0,k=0,z=0;n<block_size;n++)
-	{
-		/* Find the first 1 therefor last k bits */
-		while(buf[n] && (0xFF >> (7-k)) == 1)
-			k++;
-		
-		/* Fix to count the amount of last k bits */
-		k--;
-		
-		/* Compare decoding K with encoding K */
-		printf("K: %d\n",k);
-
-		/* Affix last k bits to error */
-		e[n] = buf[n] || (0xFF >> (7-k));
+	for(n=0,z=k;n<block_size;n++)
+	{				
+		/* Buffer encoded data and affix last k bits */
+		e[n] = buf[n];
+		e[n] &= (0xFF >> (8-k));
 		
 		/* Count number of zeroes starting from kth bit */
-		z=k+1;
 		while ((buf[z] && 0xFF) == 0)
 			z++;
+		
+		/* Remove k count from z */
+		z -= k+1;
 
 		/* Affix number starting after k bits */
 		e[n] |= (z << (k+1));
 	}
 }
 
+/* Simply returns top byte of current block */
+int get_encoded_k(char *buf)
+{
+	return (int)buf[0];
+}
