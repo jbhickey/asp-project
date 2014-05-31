@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 		/* Iterate through input data */
 		for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++)
 		{
-			/*  */
+			/* 0.5s[n] - 0.5s[n-1]? */
 			//avg_predictor(&g_data_buf[block_cnt*block_size], error, block_size);
 			
 			/* Encode error vector */
@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 			/* Write encoded data to file */
 			write_block("Output/encoded.out", write_buf, block_size);
 				
-			/* Clear write buffer */
-			//memset(write_buf, 0x00, strlen(write_buf));
+			/* Clear write buffer by size of block not strlen */
+			//memset(write_buf, 0x00, block_size);
 		}
 				
 		free(g_data_buf);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 			write_block("Output/decoded.out", error, block_size);
 				
 			/* Clear write buffer */
-			memset(error, 0x00, strlen(error));
+			memset(error, 0x00, block_size);
 		}
 
 		printf("Decoding complete...\n");

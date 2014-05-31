@@ -3,7 +3,7 @@
 #include "encoder.h"
 #include "file_io.h"
 
-/* Rice coding for a k = 2 parameter, takes error vector 
+/* Rice coding for a k = 2 parameter, takes error vector
    and for each index performs rice coding */
 void encode(char *e, char *buf, int block_size)
 {
@@ -11,21 +11,24 @@ void encode(char *e, char *buf, int block_size)
 	int z = 0;
 	int k = 0;
 
+	/* Clear buf */
+	memset(buf, 0x00, block_size);
+
 	/* Get k parameter */
 	k = get_k(get_sse(e));
-	printf("K: %d\n",k);
-
-	for(n=0,z=0;n<block_size;n++)
+	
+	for(n=0;n<block_size;n++)
 	{
-		/* Get last k bits */
-		buf[n] = e[n] && (0xFF >> (7-k));
-		
-		/* No of zeroes = Remaining 6-bits */
-		z = e[n] && (0xFF << k);
-		
-		/* Prefix sign-bit and z zeros */
-		buf[n] += 1 << (2+z);	
-		
+		/* Buffer error and get last k bits */
+		buf[n] = e[n];
+		buf[n] &= (0xFF >> (8-k));
+
+		/* Buffer error and get last remaining bits */
+		z = e[n];
+		z &= (0xFF << k);
+
+		/* Prefix sign bit and number of zeroes*/
+		buf[n] |= (0x01 << (k+z));
 	}
 }
 
@@ -47,13 +50,13 @@ int get_sse(char *e)
 int get_k(int s_error)
 {
 	int k = 0;
-	
+
 	/* Source: Dennis Deng, assignment sheet */
 	for(k = 7;k >= 1;k--)
 	{
 		if(((s_error >> k) & 1) == 1)
 			break;
-	}        
-	
+	}
+
 	return k;
 }
