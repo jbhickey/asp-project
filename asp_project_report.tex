@@ -21,7 +21,8 @@
 
 \documentclass{article}
 
-%\usepackage[margin=0.5in]{geometry}
+\usepackage{geometry}
+\usepackage{listings}
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
 \usepackage{graphicx} % Required for the inclusion of images
 \usepackage{natbib} % Required to change bibliography style to APA
@@ -56,10 +57,10 @@
 Data compression algorithms that do not approximate or truncate data during the reconstruction/deconstruction process are referred to as ``lossless''. Applications for lossless compression of audio data are largely for portability and convention, but is a practical solution for archiving and production. An example of a popular lossless audio codec is ``FLAC''.\\
 
 % Results
-Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error data (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).\\
+Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error signal (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).\\
 
 % Conclusions
-It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are able be generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of compression performance.\\
+It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of compression performance.\\
 
 \end{abstract}
 
@@ -69,6 +70,7 @@ It was observed that more accurate prediction yields better compression performa
 \section*{Algorithm}
 
 \subsection*{Prediction}
+\cite{makhoul1975linear}
 % Average predictor
 \begin{equation}
 S_p(i) = \sum_{j=1}^{N=2} 0.5s(i-j) \\
@@ -86,12 +88,52 @@ S_p(i) = 2s(i-1) - s(i-2) \\
 S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 \end{equation}
 
+\subsection*{Rice Coding}
+\begin{center}
+\begin{tabular}{|r|c|c|l|}
+  \hline
+  \textbf{1} & $X$ (no. of zeroes) & \textbf{1} & last $k$ bits \\
+  \hline
+\end{tabular}
+\end{center}
 
-%% Include block diagram of process and explanation for each step
+\section*{Implementation}
+%Block diagram of implementation of whole process
+%Read block
+%predict block
+%encode prediction error vector
+%compress encoded data
+%write compressed data
+%repeat process for incomplete block
 
+\section*{Results}
 
+\section*{Conclusion}
+Given an accurate prediction model of the input signal, ``Rice codes'' are a viable and efficient solution to losslessly compress data by enabling the description of a signal sample in shorter bit widths than the literal value or ``amplitude''. \\ 
 
-\cite{makhoul1975linear}
+The prediction model is pivotal in increasing the compression performance of the encoder by minimizing prediction errors and therefore allowing the use of smaller symbols to describe the intact input signal. \\
+
+Reliability of the symbols was also noted to be important, as the signal could not be reconstructed in the event of overflows, typically observed when a large sum of squared errors designates a non ideal $k$ parameter for encoding the prediction error. Some data expansion was observed in this case, as the non ideal $k$ parameter sometimes generated codes larger than the original sample. \\ 
+
+\newpage
+\appendix
+\newgeometry{left=2cm}
+\section*{Source Code} \label{App:code}
+% the \\ insures the section title is centered below the phrase: AppendixA
+\subsection*{Main Routine}
+\lstinputlisting{asp_project.c}
+\newpage
+\subsection*{Prediction}
+\lstinputlisting{prediction.c}
+\lstinputlisting{prediction.h}
+\newpage
+\subsection*{Rice Coding}
+\lstinputlisting{encoder.c}
+\lstinputlisting{encoder.h}
+\newpage
+\subsection*{File IO}
+\lstinputlisting{file_io.c}
+\lstinputlisting{file_io.h}
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------

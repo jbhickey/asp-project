@@ -4,9 +4,6 @@
 #include "prediction.h"
 #include "file_io.h"
 
-/* Average 1st order linear predictor, take signal data and return
-   eq e[n] = s[n] - sp[n]
-   sp[n] = 0.5s[n-1] + 0.5s[n-2] */
 void avg_predictor(char *s, char *e, int block_size)
 {
 	char *sp = (char*) malloc (sizeof(char)*block_size);
