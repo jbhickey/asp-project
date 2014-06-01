@@ -14,7 +14,7 @@ int encode(char *e, char *buf, int block_size)
 	memset(buf, 0x00, block_size);
 
 	/* Get k parameter */
-	k = get_k(get_sse(e));
+	k = get_k(get_sse(e, block_size));
 	
 	for(n=0;n<block_size;n++)
 	{
@@ -29,22 +29,21 @@ int encode(char *e, char *buf, int block_size)
 		/* Prefix sign bit and number of zeroes*/
 		buf[n] |= (0x01 << (k+z));
 		
-		/* Ensure bit showing start of k bits is 1 */
+		/* Add |1| after kth bit */
 		buf[n] |= (0x01 << k);
 	}
-
 	return k;
 }
 
 /* Given an error vector */
 /* returns the sum of squared error */
-int get_sse(char *e)
+int get_sse(char *e, int block_size)
 {
 	int sse = 0;
 	int se = 0;
 	int i = 0;
 
-	for(i=0;i<strlen(e);i++)
+	for(i=0;i<block_size;i++)
 	{
 		se = e[i]*e[i];
 		sse += se;

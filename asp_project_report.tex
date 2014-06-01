@@ -58,9 +58,8 @@ Data compression algorithms that do not approximate or truncate data during the 
 % Results
 Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error data (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).
 
-% Table
-
 % Conclusions
+It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are able be generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of a severely limited compression performance.  
 
 \end{abstract}
 
