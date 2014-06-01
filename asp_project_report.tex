@@ -21,7 +21,7 @@
 
 \documentclass{article}
 
-\usepackage[margin=0.5in]{geometry}
+%\usepackage[margin=0.5in]{geometry}
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
 \usepackage{graphicx} % Required for the inclusion of images
 \usepackage{natbib} % Required to change bibliography style to APA
@@ -53,13 +53,13 @@
 \begin{abstract}
 
 % Background
-Data compression algorithms that do not approximate or truncate data during the reconstruction/deconstruction process are referred to as ``lossless''. Applications for lossless compression of audio data are largely for portability and convention, but is a practical solution for archiving and production. An example of a popular lossless audio codec is ``FLAC''.
+Data compression algorithms that do not approximate or truncate data during the reconstruction/deconstruction process are referred to as ``lossless''. Applications for lossless compression of audio data are largely for portability and convention, but is a practical solution for archiving and production. An example of a popular lossless audio codec is ``FLAC''.\\
 
 % Results
-Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error data (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).
+Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error data (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).\\
 
 % Conclusions
-It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are able be generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of a severely limited compression performance.  
+It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are able be generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of compression performance.\\
 
 \end{abstract}
 
@@ -67,6 +67,25 @@ It was observed that more accurate prediction yields better compression performa
 %	SECTIONS
 %----------------------------------------------------------------------------------------
 \section*{Algorithm}
+
+\subsection*{Prediction}
+% Average predictor
+\begin{equation}
+S_p(i) = \sum_{j=1}^{N=2} 0.5s(i-j) \\
+\end{equation}
+
+\begin{equation}
+S_p(i) = s(i-1) \\
+\end{equation}
+
+\begin{equation}
+S_p(i) = 2s(i-1) - s(i-2) \\
+\end{equation}
+
+\begin{equation}
+S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
+\end{equation}
+
 
 %% Include block diagram of process and explanation for each step
 

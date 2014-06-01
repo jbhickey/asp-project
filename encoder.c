@@ -14,7 +14,7 @@ int encode(char *e, char *buf, int block_size)
 	memset(buf, 0x00, block_size);
 
 	/* Get k parameter */
-	k = get_k(get_sse(e, block_size));
+	k = get_k(get_sse(e, block_size)/block_size);
 	
 	for(n=0;n<block_size;n++)
 	{
