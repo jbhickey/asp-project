@@ -42,25 +42,18 @@ void write_k(char *filename, int k)
 	fclose(output_file);	
 }
 
-void write_block(char *filename, char *data, int block_size)
+/* Append a chunk of data to output file */
+void write_block(char *filename, char *data, int cnt)
 {
 	FILE* output_file;
 	int i = 0;
 	
 	output_file = fopen(filename, "a"); // Open file for appending
 	
-	for(i=0;i<block_size;i++)
+	for(i=0;i<cnt;i++)
 		fprintf(output_file,"%c",data[i]);
 	
 	fclose(output_file);
-
-	/*
-	  Get number of samples to find which block
-	  will be the final based off the BLOCK_SIZE
-
-	  if(block_cnt == final_block)
-	          free(g_data_buf);
-	*/
 }
 
 long get_file_size(FILE *file)
@@ -77,11 +70,4 @@ long get_file_size(FILE *file)
 	rewind(file); 
 
 	return size;
-}
-
-int get_num_samples(char *data)
-{
-	int num_samples = 0;
-
-	return num_samples;
 }

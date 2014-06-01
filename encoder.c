@@ -7,8 +7,8 @@
 int encode(char *e, char *buf, int block_size)
 {
 	int n = 0;
-	int z = 0;
 	int k = 0;
+	int z = 0;
 
 	/* Clear buf */
 	memset(buf, 0x00, block_size);
@@ -28,6 +28,9 @@ int encode(char *e, char *buf, int block_size)
 
 		/* Prefix sign bit and number of zeroes*/
 		buf[n] |= (0x01 << (k+z));
+		
+		/* Ensure bit showing start of k bits is 1 */
+		buf[n] |= (0x01 << k);
 	}
 
 	return k;

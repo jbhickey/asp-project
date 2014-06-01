@@ -6,18 +6,22 @@
 #include "prediction.h"
 #include "encoder.h"
 #include "decoder.h"
+#include "compression.h"
 
 char *g_data_buf;
-char *error;
-char *write_buf;
+char *encoded_data;
+char *decoded_data;
+char *compressed_data;
 
 int main(int argc, char *argv[])
 {    
 	int block_size = 0;
 	int file_size = 0;
+	int write_size = 0;
 	int block_cnt = 0;
 	int k = 0;
-
+	int data_remaining;
+	
 	if(argc != 3)
 	{
 		printf("Incorrect input arguments\n");
@@ -28,9 +32,10 @@ int main(int argc, char *argv[])
 	{
 		block_size = atoi(argv[2]);
 
-		error = (char*) malloc (sizeof(char)*block_size);
-		write_buf = (char*) malloc (sizeof(char)*block_size);
-	
+		encoded_data = (char*) malloc (sizeof(char)*block_size);
+		decoded_data = (char*) malloc (sizeof(char)*block_size);
+		compressed_data = (char*) malloc (sizeof(char)*block_size);
+		
 		/* Filename as argument */
 		file_size = read_file(argv[1]);
 
@@ -40,46 +45,44 @@ int main(int argc, char *argv[])
 			/* 0.5s[n] - 0.5s[n-1]? */
 			//avg_predictor(&g_data_buf[block_cnt*block_size], error, block_size);
 			
-			/* Encode error vector */
-			//k = encode(error, write_buf, block_size);
-			k = encode(&g_data_buf[block_cnt*block_size], write_buf, block_size);
+			/* Encode data */
+			k = encode(&g_data_buf[block_cnt*block_size], encoded_data, block_size);
 			
-			/* Write encoded data to file */
+			/* Write encoded data with one byte per sample (no compression) */
 			write_k("Output/encoded.out", k);
-			write_block("Output/encoded.out", write_buf, block_size);			
+			write_block("Output/encoded.out", encoded_data, block_size);
+	
+			/* Compress encoded data */
+			write_size = compress(compressed_data, encoded_data, k, block_size);
+
+			/* Write compressed data */
+			write_block("Output/compressed.out", compressed_data, write_size);
 		}
 		
-		/* TODO: Handle remaining data */
+		/* Get number of remaining bytes */
+		data_remaining = file_size % block_size;
 
-
-		/* Free global input data */
-		free(g_data_buf);
-
-		printf("Encoding complete...\n");
-		printf("Beginning decoding...\n");
-
-		/* Read encoded output file */
-		file_size = read_file("Output/encoded.out");
-		for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++)
-		{
-			/* Get k value from global data */
-			k = get_encoded_k(&g_data_buf[block_cnt*block_size]);
+		if(data_remaining){
+			/* Encode remaining data */
+			k = encode(&g_data_buf[block_cnt*block_size], encoded_data, data_remaining);
 			
-			/* Decode to error vector */
-			decode(error, &g_data_buf[(block_cnt*block_size)+1], block_size, k);
-			
-			/* Write encoded data to file */
-			write_block("Output/decoded.wav", error, block_size);
-				
-			/* Clear write buffer */
-			memset(error, 0x00, block_size);
+			/* Write encoded data uncompressed */
+			write_k("Output/encoded.out", k);
+			write_block("Output/encoded.out", encoded_data, data_remaining);			
+		
+			/* Compress remaining data */
+			write_size = compress(compressed_data, encoded_data, k, data_remaining);
+
+			/* Write when each byte is full (compressed) */
+			write_block("Output/compressed.out", compressed_data, write_size);
 		}
 
-		printf("Decoding complete...\n");
+		printf("Operation complete...\n");		
 		  
 		/* Free up used memory */
-		free(error);
-		free(write_buf);
+		free(encoded_data);
+		free(decoded_data);
+		free(compressed_data);
 		free(g_data_buf);
 	}
 	return 0;
