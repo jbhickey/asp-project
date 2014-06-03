@@ -97,7 +97,7 @@ void encoding_routine(void)
 	data_remaining = file_size % block_size;
 	if(data_remaining){
 		/* Linear prediction */
-		avg_predictor(&g_data_buf[block_cnt*block_size], error, data_remaining);
+		n_order_predictor(&g_data_buf[++block_cnt*block_size], error, data_remaining, 3);
 		
 		/* Write out prediction error */
 		write_block("Output/prediction.out", error, data_remaining);
@@ -139,7 +139,7 @@ void decoding_routine(void)
 		/* Write encoded data to file */
 		write_block("Output/decoded.out", decoded_data, block_size);
 	}
-
+	
 	/* Handle remaining incomplete block */
 	data_remaining = file_size % block_size;
 	if(data_remaining){		
