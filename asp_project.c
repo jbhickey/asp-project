@@ -34,15 +34,18 @@ int main(int argc, char *argv[])
 	{
 		block_size = atoi(argv[2]);
 
+		/* Error, encoding, decoding and compression is done per block */
 		error = (char*) malloc (sizeof(char)*block_size);
 		encoded_data = (char*) malloc (sizeof(char)*block_size);
 		decoded_data = (char*) malloc (sizeof(char)*block_size);
-		compressed_data = (char*) malloc (sizeof(char)*block_size);
-		decompressed_data = (char*) malloc (sizeof(char)*block_size);
+		compressed_data = (char*) malloc (sizeof(char)*block_size);		
 
 		/* Input .wav file */
 		file_size = read_file(argv[1]);
 	
+		/* Decompression done as file to generate blocks */
+		decompressed_data = (char*) malloc (sizeof(char)*file_size);
+
 		/* Encode and compress data */
 		encoding_routine();
 		printf("Encoding complete...\n");		
@@ -69,6 +72,7 @@ void encoding_routine(void)
 	int block_cnt = 0;
 	int k = 0;
 	int data_remaining = 0;
+	long compressed_file_size = 0;
 
 	/* Iterate through full blocks */
 	for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++)
@@ -91,6 +95,7 @@ void encoding_routine(void)
 
 		/* Write compressed data */
 		write_block("Output/compressed.out", compressed_data, write_size);
+		compressed_file_size += write_size;
 	}
 		
 	/* Handle remaining incomplete block */
@@ -114,7 +119,9 @@ void encoding_routine(void)
 		
 		/* Write when each byte is full (compressed) */
 		write_block("Output/compressed.out", compressed_data, write_size);
+		compressed_file_size += write_size;
 	}
+	printf("Compressed file size: %lu\n",compressed_file_size);
 }
 
 void decoding_routine(void)
@@ -122,19 +129,21 @@ void decoding_routine(void)
 	int block_cnt = 0;
 	int k = 0;
 	int data_remaining = 0;
-	int k_offset = 0;
+	int k_offset = 0;	
 
 	/* Decompress block */
-	decompress(decompressed_data, compressed_data, write_size);
+	/* decompress(decompressed_data, g_data_buf, write_size); */
 
 	/* Iterate through full blocks */
 	for(block_cnt=0;block_cnt<(file_size/block_size);block_cnt++,k_offset++)
 	{
 		/* Get k value from global data */
-		k = get_encoded_k(&decompressed_data[(block_cnt*block_size)+k_offset]);
+		/* k = get_encoded_k(&decompressed_data[block_cnt+block_size]+k_offset]); */
+		k = get_encoded_k(&g_data_buf[(block_cnt*block_size)+k_offset]);
 			
 		/* Decode to error vector */
-		decode(decoded_data, &decompressed_data[(block_cnt*block_size)+k_offset+1], block_size, k);
+		/* decode(decoded_data, &decompressed_data[(block_cnt*block_size)+k_offset+1], block_size, k); */
+		decode(decoded_data, &g_data_buf[(block_cnt*block_size)+k_offset+1], block_size, k);
 			
 		/* Write encoded data to file */
 		write_block("Output/decoded.out", decoded_data, block_size);
@@ -143,8 +152,10 @@ void decoding_routine(void)
 	/* Handle remaining incomplete block */
 	data_remaining = file_size % block_size;
 	if(data_remaining){		
-		k = get_encoded_k(&decompressed_data[block_cnt*block_size]+k_offset);
-		
+		/* k = get_encoded_k(&decompressed_data[block_cnt*block_size]+k_offset); */
+		k = get_encoded_k(&g_data_buf[block_cnt*block_size]+k_offset);
+
+		/* decode(decoded_data, &decompress_data[(block_cnt*block_size)+k_offset+1], data_remaining, k); */
 		decode(decoded_data, &g_data_buf[(block_cnt*block_size)+k_offset+1], data_remaining, k);
    		
 		write_block("Output/decoded.out", decoded_data, data_remaining);

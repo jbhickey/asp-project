@@ -8,8 +8,9 @@ int encode(char *e, char *buf, int block_size)
 {
 	int n = 0;
 	int k = 0;
-	char z = 0;
-	char tmp = 0;
+	unsigned char z = 0;
+	unsigned char tmp = 0;
+	unsigned char bit_mask = 0;
 
 	/* Clear buf */
 	memset(buf, 0x00, block_size);
@@ -20,21 +21,25 @@ int encode(char *e, char *buf, int block_size)
 	for(n=0;n<block_size;n++)
 	{
 		/* Buffer error */
-		tmp = e[n];
+		tmp = e[n]; 
 
 		/* Get last k bits */
+		bit_mask = 0xFF >> (8-k);
 		buf[n] = tmp;
-		buf[n] &= (0xFF >> (8-k));
+		buf[n] &= bit_mask;
+
+		/* Add |1| after kth bit  */
+		buf[n] |= (0x01 << k);
 
 		/* Buffer error and get last remaining bits */
+		bit_mask = 0xFF << k;
 		z = tmp;
-		z &= (0xFF << k));
+		z &= bit_mask;		
 
 		/* Prefix sign bit and number of zeroes*/
-		buf[n] |= (0x01 << (k+z));
-		
-		/* Add |1| after kth bit for +ve sign */
-		buf[n] |= (0x01 << k);
+		if(tmp > 0){
+			buf[n] |= (0x02 << (k+z));
+		}	
 	}
 	return k;
 }

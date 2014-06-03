@@ -79,4 +79,5 @@ void n_order_predictor(char *s, char *e, int block_size, int n_order)
 	for(n=0;n<block_size;n++){
 		e[n] = sp[n] - s[n];
 	}
+	free(sp);
 }
