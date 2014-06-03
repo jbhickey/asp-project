@@ -18,19 +18,20 @@ void avg_predictor(char *s, char *e, int block_size)
 			sp[n] = (s[n-1]/2);
 		else if(n>=2)
 			sp[n] = ((s[n-1]/2) + (s[n-2]/2));
-				
-		e[n] = s[n] - sp[n];		
+
+		e[n] = s[n] - sp[n];
 	}
 	free(sp);
 }
 
+/* Signal (s) in, error (e) out */
 void n_order_predictor(char *s, char *e, int block_size, int n_order)
 {
 	char *sp = (char*) malloc (sizeof(char)*block_size);
 	int n = 0;
 
 	/* Prediction */
-	switch(n_order){		
+	switch(n_order){
 	case 1:
 		for(n=0;n<block_size;n++){
 			if(n==0){
@@ -44,10 +45,10 @@ void n_order_predictor(char *s, char *e, int block_size, int n_order)
 		for(n=0;n<block_size;n++){
 			if(n==0){
 				sp[n] = 0;
-			} else if(n==1){	
+			} else if(n==1){
 				sp[n] = 2*s[n-1];
 			} else {
-				sp[n] = 2*s[n-1];			
+				sp[n] = 2*s[n-1];
 				sp[n] -= s[n-2];
 			}
 		}
