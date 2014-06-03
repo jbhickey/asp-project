@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "encoder.h"
-#include "file_io.h"
 
 /* Encodes block data and returns k parameter for block */
 int encode(char *e, char *buf, int block_size)
