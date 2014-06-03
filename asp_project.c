@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		sample_size = atoi(argv[1]);
 
 		sample_data = (int*) malloc (sizeof(int)*sample_size);
-		encoded_data = (int*) malloc (sizeof(int)*sample_size);
+		encoded_data = (int*) malloc (sizeof(int)*sample_size*2);
 		decoded_data = (int*) malloc (sizeof(int)*sample_size);
 
 		/* Generate data */
