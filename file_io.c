@@ -30,35 +30,9 @@ int read_file(char *filename)
 	return input_file_size;
 }
 
-/* Write only the k parameter to output */
-void write_k(char *filename, int k)
+int get_file_size(FILE *file)
 {
-	FILE* output_file;
-	
-	output_file = fopen(filename, "a"); // Open file for appending
-	
-	fprintf(output_file,"%c",(char)k);
-	
-	fclose(output_file);	
-}
-
-/* Append a chunk of data to output file */
-void write_block(char *filename, char *data, int cnt)
-{
-	FILE* output_file;
-	int i = 0;
-	
-	output_file = fopen(filename, "a"); // Open file for appending
-	
-	for(i=0;i<cnt;i++)
-		fprintf(output_file,"%c",data[i]);
-	
-	fclose(output_file);
-}
-
-long get_file_size(FILE *file)
-{
-	long size = 0;
+	int size = 0;
 
 	// Set pointer to EOF
 	fseek(file,0,SEEK_END); 

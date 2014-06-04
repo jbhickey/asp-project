@@ -19,21 +19,21 @@ void decode(int *input_data, int *output_data, int size, int k)
 		output_data[n] = input_data[n];
 		output_data[n] &= bit_mask;
 
-        /* Count how many zeroes occur */
-        bit_mask = 0x02 << k;
-        while((input_data[n] & bit_mask) == 0){
-            bit_mask <<= 1;
-            z++;
-        }
+		/* Count how many zeroes occur */
+		bit_mask = 0x02 << k;
+		while((input_data[n] & bit_mask) == 0){
+			bit_mask <<= 1;
+			z++;
+		}
 
-        /* Shift z to kth bit */
-        z <<= k;
+		/* Shift z to kth bit */
+		z <<= k;
 
-        /* Affix z */
-        output_data[n] |= z;
+		/* Affix z */
+		output_data[n] |= z;
 
-        /* Reset parameters for next sample */
-        z = 0;
+		/* Reset parameters for next sample */
+		z = 0;
 	}
 }
 

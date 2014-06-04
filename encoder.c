@@ -26,16 +26,16 @@ int encode(int *input_data, int *output_data, int size)
 		/* Add |1| after kth bit  */
 		output_data[n] |= (0x01 << k);
 
-        /* Buffer error and get last Z remaining bits */
-        bit_mask = 0xFF << k;
-        z = input_data[n];
-        z &= bit_mask;
+		/* Buffer error and get last Z remaining bits */
+		bit_mask = 0xFF << k;
+		z = input_data[n];
+		z &= bit_mask;
 
-        /* Align Z with bit 0 */
-        z >>= k;
+		/* Align Z with bit 0 */
+		z >>= k;
 
-        /* Prefix sign bit and Z amount of zeroes */
-        output_data[n] |= (0x02 << (k+z));
+		/* Prefix sign bit and Z amount of zeroes */
+		output_data[n] |= (0x02 << (k+z));
 	}
 	return k;
 }
