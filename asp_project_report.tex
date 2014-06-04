@@ -74,6 +74,9 @@ Specifically, data compression in the order of ninety percent of the original da
 \subsection*{Prediction}
 
 \cite{makhoul1975linear}
+
+The following linear prediction models were used in development and testing of the compression algorithm.\\
+
 % Average predictor
 \begin{equation}
 S_p(i) = \sum_{j=1}^{N=2} 0.5s(i-j) \\
@@ -86,6 +89,8 @@ S_p(i) = s(i-1) \\
 \begin{equation}
 S_p(i) = 2s(i-1) - s(i-2) \\
 \end{equation}
+
+Experiments conducted in order to make observations of the compression performance and other encoding factors used the following linear predictor. \\
 
 \begin{equation}
 S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
@@ -102,6 +107,9 @@ S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 \end{center}
 
 \section*{Implementation}
+The C programming language was used to implement every component of this project, proving useful in handling bit level file operations for data compression and simple implementation of signal processing for samples in a block of data using loop structures.\\
+ 
+The following diagram describes the system level implementation of components within the compression algorithm program.\\
 %Block diagram of implementation of whole process
 %Read block
 %predict block
