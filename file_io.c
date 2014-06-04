@@ -5,6 +5,17 @@
 
 extern char *g_data_buf;
 
+void write_byte(char byte, char *filename)
+{
+	FILE *output_file;
+
+	output_file = fopen(filename,"a");
+	
+	fprintf("%c",byte);
+
+	fclose(output_file);
+}
+
 int read_file(char *filename)
 {
 	FILE *input_file;
