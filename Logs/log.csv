@@ -6,3 +6,5 @@ Input size (bytes),Output size (bytes),Block size (bytes),Average K
 2562,2779,1400,7,
 2562,2395,900,5,
 2562,2858,200,6,
+2562,3035,1024,6,
+2562,3519,2048,6,
