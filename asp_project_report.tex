@@ -25,7 +25,6 @@
 \usepackage{listings}
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
 \usepackage{graphicx} % Required for the inclusion of images
-\usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{amsmath} % Required for some math elements 
 
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
@@ -73,9 +72,7 @@ Specifically, data compression in the order of ninety percent of the original da
 
 \subsection*{Prediction}
 
-\cite{makhoul1975linear}
-
-The following linear prediction models were used in development and testing of the compression algorithm.\\
+Several linear prediction models were used in development and testing of the compression algorithm.\\
 
 % Average predictor
 \begin{equation}
@@ -87,7 +84,7 @@ S_p(i) = s(i-1) \\
 \end{equation}
 
 \begin{equation}
-S_p(i) = 2s(i-1) - s(i-2) \\
+S_p(i) = 2s(i-1) - s(i-2) \\ \\ 
 \end{equation}
 
 Experiments conducted in order to make observations of the compression performance and other encoding factors used the following linear predictor. \\
@@ -96,7 +93,25 @@ Experiments conducted in order to make observations of the compression performan
 S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 \end{equation}
 
+The iterative process of the linear prediction library is described in the following block diagram.\\
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.3]{Diagrams/prediction.eps}
+\caption{Linear prediction iteration}
+\label{fig:predict}
+\end{figure}
+
 \subsection*{Rice Coding}
+The following block diagram describes the algorithm used to encode the prediction error, assume the diagram refers to a single byte sample of the error signal.\\
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.3]{Diagrams/rice.eps}
+\caption{Rice coding process}
+\label{fig:rice}
+\end{figure}
+
+The encoding scheme produced a symbol in the following format.\\
 
 \begin{center}
 \begin{tabular}{|r|c|c|l|}
@@ -106,33 +121,45 @@ S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 \end{tabular}
 \end{center}
 
+\subsection*{Bit and File Operations}
+A simple bit operations library was written for the purpose of pushing (bit-by-bit) the encoded symbol to a byte buffer which, when ``full'', would be written to the output file as a single character. The relevant bits of the codes were masked out and simply shifted into the next available space in the byte buffer.\\ 
+
 \section*{Implementation}
 The C programming language was used to implement every component of this project, proving useful in handling bit level file operations for data compression and simple implementation of signal processing for samples in a block of data using loop structures.\\
  
 The following diagram describes the system level implementation of components within the compression algorithm program.\\
-%Block diagram of implementation of whole process
-%Read block
-%predict block
-%encode prediction error vector
-%compress encoded data
-%write compressed data
-%repeat process for incomplete block
 
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.3]{Diagrams/system.eps}
+\caption{System diagram of compression program}
+\label{fig:digraph}
+\end{figure}
+
+A file read was read in by the program, blocks of data from the file were accessed by the prediction library and another block of data generated based on the eror calculated. The error signal was then encoded using the rice coding library and written to the output file along with data parameters required for decoding ($k$, block size, predictor used). The program checks for any unread data in the file after performing block processing and iterates through the remaining data as usual (just with adjusted memory allocation as a result of a different block size).\\
+ 
 \section*{Results}
 
 The following experiment was conducted using a 2562 byte .wav file, using a range of block sizes in an attempt to observe correlating features between compression efficiency and parameters calculated using block size or attributes of the data contained within the block.
 
-\begin{center}
-\begin{table}  
-  \begin{tabular}{|c|c|c|}
+
+\begin{table}[h]  
+  \centering
+  \begin{tabular}{|c|c|c|c|}
     \hline
     \textbf{Input file size} & \textbf{Output file size} & \textbf{Block size} & \textbf{Average K} \\
     \hline
+    \hline
     2562 & 2282 & 1700 & 5\\
+    \hline
     2562 & 2425 & 1500 & 6\\
+    \hline
     2562 & 2779 & 1400 & 7\\
+    \hline
     2562 & 2395 & 900 & 5\\
+    \hline
     2562 & 2858 & 200 & 6\\
+    \hline
   \end{tabular}
   \caption{Table of results comparing file sizes in bytes}
   \label{tab:results}
@@ -164,13 +191,6 @@ Or more conclusively, the prediction model is pivotal in increasing the compress
 \subsection*{File IO}
 \lstinputlisting{file_io.c}
 \lstinputlisting{file_io.h}
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
-%----------------------------------------------------------------------------------------
-
-\bibliographystyle{apalike}
-
-\bibliography{refs}
 
 %----------------------------------------------------------------------------------------
 

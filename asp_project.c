@@ -5,7 +5,6 @@
 #include "file_io.h"
 #include "prediction.h"
 #include "encoder.h"
-#include "decoder.h"
 
 char *g_data_buf;
 char *error;
