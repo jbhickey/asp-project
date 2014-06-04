@@ -5,13 +5,13 @@
 
 extern char *g_data_buf;
 
-void log_results(int input_file_size, int output_file_size, int block_size, char *filename)
+void log_results(int input_file_size, int output_file_size, int block_size, int k, char *filename)
 {
 	FILE *log_file;	
 	
 	log_file = fopen(filename,"a");
 	
-	fprintf(log_file,"%d,%d,%d,\n",input_file_size, output_file_size, block_size);
+	fprintf(log_file,"%d,%d,%d,%d,\n",input_file_size, output_file_size, block_size, k);
 
 	fclose(log_file);
 }

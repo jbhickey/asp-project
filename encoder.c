@@ -4,7 +4,7 @@
 #include "file_io.h"
 
 /* Encodes block data and returns k parameter for block */
-void encode(char *input_data, int *output_data, int size)
+int encode(char *input_data, int *output_data, int size)
 {
 	int n = 0;
 	int k = 0;
@@ -53,6 +53,7 @@ void encode(char *input_data, int *output_data, int size)
 			num_bits--;
 		}
 	}
+	return k;
 }
 
 /* Given an error vector */

@@ -57,10 +57,10 @@
 Data compression algorithms that do not approximate or truncate data during the reconstruction/deconstruction process are referred to as ``lossless''. Applications for lossless compression of audio data are largely for portability and convention, but is a practical solution for archiving and production. An example of a popular lossless audio codec is ``FLAC''.\\
 
 % Results
-Initially, a typical ``average linear predictor'' was implemented to generate non-optimal error data to be encoded and written to an output file. The encoding was performed by taking the error signal (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter).\\
+Fixed coefficient linear predictors (non-optimal) were implemented to generate error data to be encoded, compressed and written to an output file. The encoding was performed by taking the error signal (and after calculating the parameter $k$ based off the sum of squared prediction error) generating ``Rice codes'' for the error (based on this $k$ parameter). Basic dat compression was performed by writing only descriptive bits in the encoded symbol to the output file.\\
 
 % Conclusions
-It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are generated. With poor prediction, the encoding algorithm generates unreliable codes due to overflows occuring while appending zeroes, which can be circumvented through the use of a higher $k$ parameter at the sacrifice of compression performance.\\
+It was observed that more accurate prediction yields better compression performance, as there will be a lower sum of squared error in each block of data and therefore shorter ``Rice codes'' are generated. With poor prediction, the encoding algorithm generates inefficient symbols due to a high amount of appending zeroes (caused by prediction error signals with high value ``upper-nibbles''. Data expansion due to this problem can be circumvented through the use of a higher $k$ parameter at the sacrifice of compression performance in shorter encoded symbols.\\
 
 \end{abstract}
 
@@ -89,6 +89,7 @@ S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 \end{equation}
 
 \subsection*{Rice Coding}
+
 \begin{center}
 \begin{tabular}{|r|c|c|l|}
   \hline
@@ -108,8 +109,28 @@ S_p(i) = 3s(i-1) - 3s(i-2) + s(i-3) \\
 
 \section*{Results}
 
+The following experiment was conducted using a 2562 byte .wav file, using a range of block sizes in an attempt to observe correlating features between compression efficiency and parameters calculated using block size or attributes of the data contained within the block.
+
+\begin{center}
+\begin{table}  
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Input file size} & \textbf{Output file size} & \textbf{Block size} & \textbf{Average K} \\
+    \hline
+    2562 & 2282 & 1700 \\
+    2562 & 2425 & 1500 \\
+    2562 & 2779 & 1400 \\
+    2562 & 2395 & 900 \\
+    2562 & 2858 & 200 \\
+  \end{tabular}
+  \caption{Table of results comparing file sizes in bytes}
+  \label{tab:results}
+\end{table}
+
+Compression performance varied $k$
+
 \section*{Conclusion}
-Given an accurate prediction model of the input signal, ``Rice codes'' are a viable and efficient solution to losslessly compress data by enabling the description of a signal sample in shorter bit widths than the literal value or ``amplitude''. \\ 
+Given an accurate prediction model of the input signal, ``Rice codes'' are a viable and efficient solution to losslessly compress data by enabling the description of a signal sample in shorter bit widths than the literal value. \\ 
 
 The prediction model is pivotal in increasing the compression performance of the encoder by minimizing prediction errors and therefore allowing the use of smaller symbols to describe the intact input signal. \\
 

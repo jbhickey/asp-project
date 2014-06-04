@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 {
 	int block_cnt = 0;
 	int data_remaining = 0;
+	int k = 0;
 
 	if(argc != 3)
 	{
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
 
 			n_order_predictor(&g_data_buf[block_cnt*block_size], error, block_size, 3);
 
-			encode(error, encoded_data, block_size);
+			k += encode(error, encoded_data, block_size);
 
 			/* Write k and encoded data to file */
 			/* compress(encoded_data, k, block_size, "Output\compressed.out"); */
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
 		output_file_size = read_file("Output/compressed.out");
 		printf("Compressed file size: %d bytes\n", output_file_size);
 		
-		log_results(input_file_size, output_file_size, atoi(argv[2]), "Logs/log.csv");
+		log_results(input_file_size, output_file_size, atoi(argv[2]), k/block_cnt, "Logs/log.csv");
 
 		free(g_data_buf);
 		free(error);
