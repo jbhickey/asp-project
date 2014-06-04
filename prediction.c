@@ -18,8 +18,6 @@ void avg_predictor(char *s, char *e, int block_size)
 			sp[n] = (s[n-1]/2);
 		else if(n>=2)
 			sp[n] = ((s[n-1]/2) + (s[n-2]/2));
-
-		e[n] = s[n] - sp[n];
 	}
 	free(sp);
 }
@@ -57,11 +55,9 @@ void n_order_predictor(char *s, char *e, int block_size, int n_order)
 		for(n=0;n<block_size;n++){
 			if(n==0){
 				sp[n] = 0;
-			}
-			if(n==1){
+			} else if(n==1){
 				sp[n] = 3*s[n-1];
-			}
-			if(n==2){
+			} else if(n==2){
 				sp[n] = 3*s[n-1];
 				sp[n] -= 3*s[n-2];
 			} else {
@@ -78,7 +74,7 @@ void n_order_predictor(char *s, char *e, int block_size, int n_order)
 
 	/* Calculate error for each sample */
 	for(n=0;n<block_size;n++){
-		e[n] = sp[n] - s[n];
+		e[n] = abs(sp[n] - s[n]);
 	}
 	free(sp);
 }
